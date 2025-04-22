@@ -1,0 +1,82 @@
+package middleware
+
+import (
+	"context"
+	"net/http"
+
+	"logger.walkaba.net/internal/config"
+	"logger.walkaba.net/internal/logger"
+	"logger.walkaba.net/pkg/utils"
+)
+
+type contextKey string
+
+const (
+	correlationIDKey contextKey = "correlation_id"
+	loggerKey        contextKey = "logger"
+)
+
+func LoggerMiddleware(channel, appName, tagName string) func(http.Handler) http.Handler {
+	return func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			correlationID := r.Header.Get("x-correlation-id")
+			if correlationID == "" {
+				correlationID = utils.GenerateUUID()
+			}
+
+			if channel == "" || appName == "" || tagName == "" {
+				envChannel, envAppName, envTagName := config.GetLoggerConfig()
+
+				if channel == "" {
+					channel = envChannel
+				}
+
+				if appName == "" {
+					appName = envAppName
+				}
+
+				if tagName == "" {
+					tagName = envTagName
+				}
+			}
+
+			requestLogger, err := logger.NewCustomLogger(channel, appName, tagName)
+			if err != nil {
+				http.Error(w, "Error initializing logger", http.StatusInternalServerError)
+				return
+			}
+
+			requestLogger.SetCorrelationID(correlationID)
+
+			ctx := context.WithValue(r.Context(), correlationIDKey, correlationID)
+			ctx = context.WithValue(ctx, loggerKey, requestLogger)
+
+			requestLogger.Info("Request received", map[string]string{
+				"method": r.Method,
+				"path":   r.URL.Path,
+				"host":   r.Host,
+			})
+
+			w.Header().Set("X-Correlation-ID", correlationID)
+
+			next.ServeHTTP(w, r.WithContext(ctx))
+		})
+	}
+}
+
+func GetLoggerFromContext(ctx context.Context) *logger.CustomLogger {
+	if logger, ok := ctx.Value(loggerKey).(*logger.CustomLogger); ok {
+		return logger
+	}
+
+	channel, appName, tagName := config.GetLoggerConfig()
+	defaultLogger, _ := logger.NewCustomLogger(channel, appName, tagName)
+	return defaultLogger
+}
+
+func GetCorrelationIDFromContext(ctx context.Context) string {
+	if id, ok := ctx.Value(correlationIDKey).(string); ok {
+		return id
+	}
+	return ""
+}
