@@ -4,15 +4,17 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/gofiber/fiber/v2"
 	"logger.walkaba.net/internal/config"
 	"logger.walkaba.net/internal/middleware"
+	"logger.walkaba.net/pkg/utils"
 )
 
-func StartServer(port int) error {
-	mux := http.NewServeMux()
+func StartServerNetHttp(host string, port int) error {
+	mux := utils.NewCountingServeMux()
 
 	channel, appName, tagName := config.GetLoggerConfig()
-	logMiddleware := middleware.LoggerMiddleware(channel, appName, tagName)
+	logMiddleware := middleware.LoggerMiddlewareNetHttp(channel, appName, tagName)
 
 	mux.HandleFunc("/api/logs", func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodGet {
@@ -34,7 +36,40 @@ func StartServer(port int) error {
 		w.Write([]byte(`{"message": "Teste com logger do contexto realizado com sucesso!"}`))
 	})
 
+	utils.PrintServerBanner(host, port, mux.HandlersCount())
+
 	handler := logMiddleware(mux)
 
-	return http.ListenAndServe(":"+strconv.Itoa(port), handler)
+	http.ListenAndServe(":"+strconv.Itoa(port), handler)
+
+	return nil
+}
+
+func StartServerFiber(port int) error {
+	app := fiber.New()
+
+	channel, appName, tagName := config.GetLoggerConfig()
+	app.Use(middleware.LoggerMiddlewareFiber(channel, appName, tagName))
+
+	app.Get("/api/logs", func(ctx *fiber.Ctx) error {
+		return ctx.JSON(fiber.Map{
+			"message": "Log endpoint funcionando!",
+		})
+	})
+
+	app.Get("/api/test", func(ctx *fiber.Ctx) error {
+		logger := middleware.GetLoggerFromFiberCtx(ctx)
+		logger.Info("Teste de endpoint com logger do contexto", map[string]string{
+			"correlation_id": middleware.GetCorrelationIDFromContext(ctx.Context()),
+			"path":           ctx.Path(),
+		})
+
+		return ctx.JSON(fiber.Map{
+			"message": "Teste com logger do contexto realizado com sucesso!",
+		})
+	})
+
+	app.Listen(":" + strconv.Itoa(port))
+
+	return nil
 }

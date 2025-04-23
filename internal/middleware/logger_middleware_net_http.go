@@ -9,14 +9,7 @@ import (
 	"logger.walkaba.net/pkg/utils"
 )
 
-type contextKey string
-
-const (
-	correlationIDKey contextKey = "correlation_id"
-	loggerKey        contextKey = "logger"
-)
-
-func LoggerMiddleware(channel, appName, tagName string) func(http.Handler) http.Handler {
+func LoggerMiddlewareNetHttp(channel, appName, tagName string) func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			correlationID := r.Header.Get("x-correlation-id")
@@ -48,8 +41,8 @@ func LoggerMiddleware(channel, appName, tagName string) func(http.Handler) http.
 
 			requestLogger.SetCorrelationID(correlationID)
 
-			ctx := context.WithValue(r.Context(), correlationIDKey, correlationID)
-			ctx = context.WithValue(ctx, loggerKey, requestLogger)
+			ctx := context.WithValue(r.Context(), logger.CorrelationIDKey, correlationID)
+			ctx = context.WithValue(ctx, logger.LoggerKey, requestLogger)
 
 			requestLogger.Info("Request received", map[string]string{
 				"method": r.Method,
@@ -65,7 +58,7 @@ func LoggerMiddleware(channel, appName, tagName string) func(http.Handler) http.
 }
 
 func GetLoggerFromContext(ctx context.Context) *logger.CustomLogger {
-	if logger, ok := ctx.Value(loggerKey).(*logger.CustomLogger); ok {
+	if logger, ok := ctx.Value(logger.LoggerKey).(*logger.CustomLogger); ok {
 		return logger
 	}
 
@@ -75,7 +68,7 @@ func GetLoggerFromContext(ctx context.Context) *logger.CustomLogger {
 }
 
 func GetCorrelationIDFromContext(ctx context.Context) string {
-	if id, ok := ctx.Value(correlationIDKey).(string); ok {
+	if id, ok := ctx.Value(logger.CorrelationIDKey).(string); ok {
 		return id
 	}
 	return ""

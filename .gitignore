@@ -1,1 +1,4 @@
 .qodo
+.env
+cmd
+main.go
