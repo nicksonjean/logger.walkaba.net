@@ -6,7 +6,6 @@ import (
 	"time"
 )
 
-// GenerateUUID gera um UUID v4 simples
 func GenerateUUID() string {
 	r := rand.New(rand.NewSource(time.Now().UnixNano()))
 	uuid := fmt.Sprintf("%08x-%04x-%04x-%04x-%012x",

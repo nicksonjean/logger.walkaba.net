@@ -3,13 +3,17 @@ package config
 import (
 	"bufio"
 	"os"
+	"strconv"
 	"strings"
 )
 
 const (
-	DefaultChannel = "development"
-	DefaultAppName = "logger"
-	DefaultTagName = "latest"
+	DefaultChannel    = "development"
+	DefaultAppName    = "logger"
+	DefaultTagName    = "latest"
+	DefaultHost       = "127.0.0.1"
+	DefaultPort       = 8080
+	DefaultMiddleware = "net/http"
 )
 
 var envVars map[string]string
@@ -48,7 +52,7 @@ func LoadEnv() error {
 	return scanner.Err()
 }
 
-func GetEnv(key, defaultValue string) string {
+func GetEnvString(key string, defaultValue string) string {
 	if value := os.Getenv(key); value != "" {
 		return value
 	}
@@ -60,15 +64,44 @@ func GetEnv(key, defaultValue string) string {
 	return defaultValue
 }
 
+func GetEnvInt(key string, defaultValue int) int {
+	if value := os.Getenv(key); value != "" {
+		if intValue, err := strconv.Atoi(value); err == nil {
+			return intValue
+		}
+	}
+
+	if value, exists := envVars[key]; exists && value != "" {
+		if intValue, err := strconv.Atoi(value); err == nil {
+			return intValue
+		}
+	}
+
+	return defaultValue
+}
+
 func GetLoggerConfig() (string, string, string) {
-	channel := GetEnv("CHANNEL", DefaultChannel)
+	channel := GetEnvString("CHANNEL", DefaultChannel)
 	if channel != "production" && channel != "development" {
 		channel = DefaultChannel
 	}
 
-	appName := GetEnv("APPNAME", DefaultAppName)
+	appName := GetEnvString("APPNAME", DefaultAppName)
 
-	tagName := GetEnv("TAGNAME", DefaultTagName)
+	tagName := GetEnvString("TAGNAME", DefaultTagName)
 
 	return channel, appName, tagName
+}
+
+func GetStartServerConfig() (string, string, int) {
+	middleware := GetEnvString("MIDDLEWARE", DefaultMiddleware)
+	if middleware != "net/http" && middleware != "fiber" {
+		middleware = DefaultMiddleware
+	}
+
+	host := GetEnvString("HOST", DefaultHost)
+
+	port := GetEnvInt("PORT", DefaultPort)
+
+	return middleware, host, port
 }

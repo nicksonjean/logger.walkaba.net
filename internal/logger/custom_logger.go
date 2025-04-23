@@ -188,7 +188,7 @@ func (l *CustomLogger) Critical(message string, extra interface{}) {
 	}
 	entry := l.createLogEntry(message, constants.CriticalLevel, extra, exc)
 	l.writeLog(entry)
-	l.zapLogger.DPanic(message)
+	l.zapLogger.Error(message, zap.String("level", "critical"))
 }
 
 func (l *CustomLogger) Alert(message string, extra interface{}) {
