@@ -46,7 +46,7 @@ func LoggerMiddlewareFiber(channel, appName, tagName string) fiber.Handler {
 			"host":   c.Hostname(),
 		})
 
-		c.Set("X-Correlation-ID", correlationID)
+		c.Set("x-correlation-id", correlationID)
 
 		return c.Next()
 	}

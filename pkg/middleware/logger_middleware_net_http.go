@@ -50,7 +50,7 @@ func LoggerMiddlewareNetHttp(channel, appName, tagName string) func(http.Handler
 				"host":   r.Host,
 			})
 
-			w.Header().Set("X-Correlation-ID", correlationID)
+			w.Header().Set("x-correlation-id", correlationID)
 
 			next.ServeHTTP(w, r.WithContext(ctx))
 		})
