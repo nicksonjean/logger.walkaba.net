@@ -4,8 +4,8 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/nicksonjean/logger.walkaba.net/internal/config"
-	"github.com/nicksonjean/logger.walkaba.net/internal/logger"
+	"github.com/nicksonjean/logger.walkaba.net/pkg/config"
+	"github.com/nicksonjean/logger.walkaba.net/pkg/logger"
 	"github.com/nicksonjean/logger.walkaba.net/pkg/utils"
 )
 

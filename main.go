@@ -3,8 +3,8 @@ package main
 import (
 	"log"
 
-	"logger.walkaba.net/cmd/server"
-	"logger.walkaba.net/internal/config"
+	"github.com/nicksonjean/logger.walkaba.net/cmd/server"
+	"github.com/nicksonjean/logger.walkaba.net/pkg/config"
 )
 
 func main() {

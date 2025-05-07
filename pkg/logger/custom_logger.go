@@ -9,9 +9,9 @@ import (
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 
-	"github.com/nicksonjean/logger.walkaba.net/internal/config"
-	"github.com/nicksonjean/logger.walkaba.net/internal/domain/constants"
-	"github.com/nicksonjean/logger.walkaba.net/internal/domain/models"
+	"github.com/nicksonjean/logger.walkaba.net/pkg/config"
+	"github.com/nicksonjean/logger.walkaba.net/pkg/domain/constants"
+	"github.com/nicksonjean/logger.walkaba.net/pkg/domain/models"
 	"github.com/nicksonjean/logger.walkaba.net/pkg/utils"
 )
 

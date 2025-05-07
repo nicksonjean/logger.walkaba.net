@@ -5,8 +5,8 @@ import (
 	"strconv"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/nicksonjean/logger.walkaba.net/internal/config"
-	"github.com/nicksonjean/logger.walkaba.net/internal/middleware"
+	"github.com/nicksonjean/logger.walkaba.net/pkg/config"
+	"github.com/nicksonjean/logger.walkaba.net/pkg/middleware"
 	"github.com/nicksonjean/logger.walkaba.net/pkg/utils"
 )
 
