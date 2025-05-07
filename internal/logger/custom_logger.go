@@ -9,10 +9,10 @@ import (
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 
-	"logger.walkaba.net/internal/config"
-	"logger.walkaba.net/internal/domain/constants"
-	"logger.walkaba.net/internal/domain/models"
-	"logger.walkaba.net/pkg/utils"
+	"github.com/nicksonjean/logger.walkaba.net/internal/config"
+	"github.com/nicksonjean/logger.walkaba.net/internal/domain/constants"
+	"github.com/nicksonjean/logger.walkaba.net/internal/domain/models"
+	"github.com/nicksonjean/logger.walkaba.net/pkg/utils"
 )
 
 type CustomLogger struct {
@@ -80,8 +80,6 @@ func NewCustomLogger(channel, appName, tagName string) (*CustomLogger, error) {
 	}, nil
 }
 
-// Getters e Setters
-
 func (l *CustomLogger) SetCorrelationID(id string) {
 	l.correlationID = id
 }
@@ -114,8 +112,6 @@ func (l *CustomLogger) GetChannel() string {
 	return l.channel
 }
 
-// Métodos de criação e escrita de logs
-
 func (l *CustomLogger) createLogEntry(message string, level int, extra interface{}, exc *models.Exception) models.CustomLog {
 	now := time.Now().UTC().Format(time.RFC3339Nano)[:23] + "Z"
 
@@ -144,8 +140,6 @@ func (l *CustomLogger) writeLog(entry models.CustomLog) {
 	}
 	fmt.Println(string(jsonData))
 }
-
-// Métodos de log por nível
 
 func (l *CustomLogger) Debug(message string, extra interface{}) {
 	entry := l.createLogEntry(message, constants.DebugLevel, extra, nil)

@@ -1,4 +1,4 @@
-module logger.walkaba.net
+module github.com/nicksonjean/logger.walkaba.net
 
 go 1.21
 

@@ -4,9 +4,9 @@ import (
 	"context"
 	"net/http"
 
-	"logger.walkaba.net/internal/config"
-	"logger.walkaba.net/internal/logger"
-	"logger.walkaba.net/pkg/utils"
+	"github.com/nicksonjean/logger.walkaba.net/internal/config"
+	"github.com/nicksonjean/logger.walkaba.net/internal/logger"
+	"github.com/nicksonjean/logger.walkaba.net/pkg/utils"
 )
 
 func LoggerMiddlewareNetHttp(channel, appName, tagName string) func(http.Handler) http.Handler {

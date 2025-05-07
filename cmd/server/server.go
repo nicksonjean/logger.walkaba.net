@@ -5,9 +5,9 @@ import (
 	"strconv"
 
 	"github.com/gofiber/fiber/v2"
-	"logger.walkaba.net/internal/config"
-	"logger.walkaba.net/internal/middleware"
-	"logger.walkaba.net/pkg/utils"
+	"github.com/nicksonjean/logger.walkaba.net/internal/config"
+	"github.com/nicksonjean/logger.walkaba.net/internal/middleware"
+	"github.com/nicksonjean/logger.walkaba.net/pkg/utils"
 )
 
 func StartServerNetHttp(host string, port int) error {

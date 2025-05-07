@@ -2,9 +2,9 @@ package middleware
 
 import (
 	"github.com/gofiber/fiber/v2"
-	"logger.walkaba.net/internal/config"
-	"logger.walkaba.net/internal/logger"
-	"logger.walkaba.net/pkg/utils"
+	"github.com/nicksonjean/logger.walkaba.net/internal/config"
+	"github.com/nicksonjean/logger.walkaba.net/internal/logger"
+	"github.com/nicksonjean/logger.walkaba.net/pkg/utils"
 )
 
 func LoggerMiddlewareFiber(channel, appName, tagName string) fiber.Handler {
